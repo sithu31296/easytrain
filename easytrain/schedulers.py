@@ -2,7 +2,7 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 from torch.optim import Optimizer
 from torch.optim.lr_scheduler import CosineAnnealingLR, LinearLR, ChainedScheduler
-from utils.distributed import *
+from easytrain.utils.distributed import *
 
 
 def create_scheduler(

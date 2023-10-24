@@ -1,13 +1,10 @@
-import os
 import torch
-import time
-import numpy as np
 from torch.utils.data import DataLoader
 from torch.optim import Optimizer
 from torch.optim.lr_scheduler import LRScheduler
-from utils.logging import MetricLogger
-from utils.distributed import *
-from utils.torch_utils import get_total_grad_norm
+from easytrain.utils.logging import MetricLogger
+from easytrain.utils.distributed import *
+from easytrain.utils.torch_utils import get_total_grad_norm
 
 
 

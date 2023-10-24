@@ -1,7 +1,7 @@
 import torch
 from torch.utils.data import Dataset, DataLoader, DistributedSampler, RandomSampler, SequentialSampler, BatchSampler
-from utils.distributed import *
-from utils.torch_utils import fix_seed
+from easytrain.utils.distributed import *
+from easytrain.utils.torch_utils import fix_seed
 
 
 def create_train_dataloader(

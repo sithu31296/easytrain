@@ -12,7 +12,7 @@ from .dataloaders import *
 from .optimizers import *
 from .schedulers import *
 from .engine import *
-from utils.distributed import *
+from easytrain.utils.distributed import *
 
 
 
@@ -24,6 +24,7 @@ class Trainer:
         criterion: torch.nn.Module,
         config: dict,
         collate_fn = None,
+        metric_fn = None,
         model_weights = None,
     ) -> None:
         torch.backends.cudnn.deterministic = True
@@ -46,6 +47,7 @@ class Trainer:
             self.model_wo_ddp = self.model.module
 
         self.criterion = criterion
+        self.metric_fn = metric_fn
         self.optimizer = create_optimizer(config['optimizer'], self.model.parameters(), config['lr'], config['weight_decay'])
         self.scheduler = create_scheduler(self.optimizer, trainset, self.trainloader, config['batch_size'], config['epochs'], config['lr'], config['end_lr'], config['warmup_iters'])
 
@@ -62,6 +64,8 @@ class Trainer:
 
 
     def train(self,
+        train_fn = train_one_epoch,
+        eval_fn = evaluate_one_epoch,
     ):
         best_score = 0.
         start_time = time.time()
@@ -69,8 +73,8 @@ class Trainer:
             if is_dist_avail_and_initialized():
                 self.train_sampler.set_epoch(epoch)
 
-            train_stats = train_one_epoch(self.model, self.criterion, self.trainloader, self.optimizer, self.scheduler, self.device, epoch)
-            test_stats, current_score = evaluate_one_epoch(self.model, self.criterion, self.testloader, self.device)
+            train_stats = train_fn(self.model, self.criterion, self.trainloader, self.optimizer, self.scheduler, self.device, epoch)
+            test_stats, current_score = eval_fn(self.model, self.criterion, self.testloader, self.device, self.metric_fn)
 
             save_on_master(self.model_wo_ddp.state_dict(), str(self.save_dir / "last.pth"))
 
