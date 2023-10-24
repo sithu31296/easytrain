@@ -15,7 +15,7 @@ def create_train_dataloader(
         train_sampler = RandomSampler(dataset)
     train_batch_sampler = BatchSampler(train_sampler, batch_size, True)
 
-    return DataLoader(dataset, batch_sampler=train_batch_sampler, num_workers=8, pin_memory=True, collate_fn=collate_fn, worker_init_fn=fix_seed), train_sampler
+    return DataLoader(dataset, batch_sampler=train_batch_sampler, num_workers=8, pin_memory=True, collate_fn=collate_fn, worker_init_fn=fix_seed)
 
 
 def create_val_dataloader(

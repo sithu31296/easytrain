@@ -82,6 +82,6 @@ def evaluate_one_epoch(
     stats = {k: meter.global_avg for k, meter in logger.meters.items()}
 
     total_score /= size
-    print("Best score: ", total_score)
+    print("Best score: ", float(f"{total_score:.4f}"))
     return stats, total_score
 

@@ -13,6 +13,7 @@ from .optimizers import *
 from .schedulers import *
 from .engine import *
 from easytrain.utils.distributed import *
+from easytrain.utils.torch_utils import *
 
 
 
@@ -27,15 +28,15 @@ class Trainer:
         metric_fn = None,
         model_weights = None,
     ) -> None:
-        torch.backends.cudnn.deterministic = True
-        fix_seed(42 + get_rank())
+        setup_cudnn()
+        fix_seed(123 + get_rank())
 
         self.config = config
         self.gpu = init_distributed_mode()
         self.num_of_gpus = get_world_size()
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-        self.trainloader, self.train_sampler = create_train_dataloader(trainset, config['batch_size'], collate_fn)
+        self.trainloader = create_train_dataloader(trainset, config['batch_size'], collate_fn)
         self.testloader = create_val_dataloader(testset, config['batch_size'], collate_fn)
 
         self.model = model
@@ -71,7 +72,7 @@ class Trainer:
         start_time = time.time()
         for epoch in range(self.config['epochs']):
             if is_dist_avail_and_initialized():
-                self.train_sampler.set_epoch(epoch)
+                self.trainloader.batch_sampler.sampler.set_epoch(epoch)
 
             train_stats = train_fn(self.model, self.criterion, self.trainloader, self.optimizer, self.scheduler, self.device, epoch)
             test_stats, current_score = eval_fn(self.model, self.criterion, self.testloader, self.device, self.metric_fn)

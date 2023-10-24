@@ -76,7 +76,8 @@ def init_distributed_mode():
 
 
 def cleanup():
-    dist.destroy_process_group()
+    if is_dist_avail_and_initialized():
+        dist.destroy_process_group()
 
 def all_gather(data):
     """Run all_gather on arbitary pickable data (not necessarily tensors)
