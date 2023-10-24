@@ -52,21 +52,20 @@ def setup_cudnn() -> None:
     cudnn.deterministic = True
 
 
-def denormalize(images):
+def denormalize(image: torch.Tensor):
     inv_normalize = T.Normalize(
         mean=(-0.485/0.229, -0.456/0.224, -0.406/0.225),
         std=(1/0.229, 1/0.224, 1/0.225)
     )
-    if isinstance(images, torch.Tensor):
-        new_images = []
-        for image in images:
-            image = inv_normalize(image)
-            image *= 255
-            image = image.to(torch.uint8).numpy().transpose((1, 2, 0))
-            new_images.append(image)
-    else:
-        new_images = images
-    return new_images
+    if image.ndim == 4:
+        image = image.squeeze()
+        
+    if isinstance(image, torch.Tensor):
+        image = inv_normalize(image)
+        image *= 255
+        image = image.to(torch.uint8).cpu().numpy().transpose((1, 2, 0))
+    return image
+
 
 def get_model_size(model: Union[nn.Module, torch.jit.ScriptModule]):
     tmp_model_path = Path('temp.p')
