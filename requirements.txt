@@ -1,2 +1,4 @@
 numpy
 onnxscript
+tensorrt
+torch-tensorrt
