@@ -3,6 +3,9 @@ import torch_tensorrt
 from torch import onnx
 
 
+def optimize_model(model: torch.nn.Module):
+    return torch.compile(model, mode='reduce-overhead')
+
 
 def convert_to_onnx(model: torch.nn.Module, save_path: str, model_args: tuple, model_kwargs: dict):
     """Using TorchDynamo to capture an FX graph
