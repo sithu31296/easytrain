@@ -33,11 +33,14 @@ def fix_seed(seed: int = 123) -> None:
     random.seed(seed)
 
 
+# def collate_fn(batch):
+#     imgs, omap, metadata = tuple(zip(*batch))
+#     imgs = torch.stack(imgs)
+#     omap = torch.stack(omap)
+#     return imgs, omap, metadata
+
 def collate_fn(batch):
-    imgs, omap, metadata = tuple(zip(*batch))
-    imgs = torch.stack(imgs)
-    omap = torch.stack(omap)
-    return imgs, omap, metadata
+    return tuple(zip(*batch))
 
 
 def time_sync() -> float:
