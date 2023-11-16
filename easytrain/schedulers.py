@@ -8,7 +8,6 @@ from easytrain.utils.distributed import *
 def create_scheduler(
     scheduler_name: str,
     optimizer: Optimizer,
-    dataset: Dataset,
     dataloader: DataLoader,
     batch_size: int,
     epochs: int,
@@ -18,7 +17,7 @@ def create_scheduler(
     milestones: list = None,
 ):
     num_of_gpus = get_world_size()
-    iters_per_epoch = len(dataset) // (batch_size * num_of_gpus)
+    iters_per_epoch = len(dataloader.dataset) // (batch_size * num_of_gpus)
     max_iters = epochs * iters_per_epoch
     warmup_iters = min(warmup_iters, len(dataloader)-1)
 
@@ -26,7 +25,7 @@ def create_scheduler(
 
     if scheduler_name == 'multisteplr':
         if milestones is None:
-            milestones = [int(epochs*0.6)*iters_per_epoch, int(epochs*0.85)*iters_per_epoch]
+            milestones = [int(epochs*0.6*iters_per_epoch), int(epochs*0.85*iters_per_epoch)]
         else:
             milestones = list(map(lambda x: int(x*iters_per_epoch), milestones))
         scheduler2 = MultiStepLR(optimizer, milestones, gamma=0.1)
