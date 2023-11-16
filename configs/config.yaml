@@ -1,0 +1,26 @@
+save_dir: output_dir
+
+# datasets
+dataset: dataset_name
+root: /path/to/dataset
+num_classes: num_classes in int
+
+# model
+model: model_name
+
+# hyperparameters
+batch_size: 2
+epochs: 26
+workers: 4
+
+# optimizer
+optimizer: sgd
+lr: 0.01
+weight_decay: 1.e-4
+
+# scheduler
+scheduler: multisteplr
+milestones: [16, 22]
+warmup_iters: 1000
+
+
