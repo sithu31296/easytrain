@@ -4,24 +4,23 @@ from easytrain.utils.distributed import *
 from easytrain.utils.torch_utils import fix_seed
 
 
-def create_train_dataloader(
-    dataset: Dataset,
+def create_dataloader(
+    trainset: Dataset,
+    valset: Dataset,
     batch_size: int,
-    collate_fn = None,
+    collate_fn=None,
+    num_workers: int = 8,
 ):
     if is_dist_avail_and_initialized():
-        train_sampler = DistributedSampler(dataset)
+        train_sampler = DistributedSampler(trainset)
+        val_sampler = DistributedSampler(valset, shuffle=False)
     else:
-        train_sampler = RandomSampler(dataset)
-    train_batch_sampler = BatchSampler(train_sampler, batch_size, True)
+        train_sampler = RandomSampler(trainset)
+        val_sampler = SequentialSampler(valset)
+    
+    train_batch_sampler = BatchSampler(train_sampler, batch_size, drop_last=True)
 
-    return DataLoader(dataset, batch_sampler=train_batch_sampler, num_workers=8, pin_memory=True, collate_fn=collate_fn, worker_init_fn=fix_seed)
+    train_loader = DataLoader(trainset, batch_sampler=train_batch_sampler, num_workers=num_workers, collate_fn=collate_fn, worker_init_fn=fix_seed)
+    val_loader = DataLoader(valset, 1, sampler=val_sampler, num_workers=num_workers, collate_fn=collate_fn)
 
-
-def create_val_dataloader(
-    dataset: Dataset,
-    batch_size: int,
-    collate_fn = None,
-):
-    test_sampler = SequentialSampler(dataset)
-    return DataLoader(dataset, batch_size, sampler=test_sampler, num_workers=4, drop_last=False, pin_memory=True, collate_fn=collate_fn)
+    return train_loader, val_loader
