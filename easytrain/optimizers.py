@@ -15,5 +15,5 @@ def create_optimizer(
     elif name == 'adam':
         optimizer = Adam(params, lr, weight_decay=weight_decay)
     else:
-        optimizer = SGD(params, lr, weight_decay=weight_decay)
+        optimizer = SGD(params, lr, weight_decay=weight_decay, momentum=0.9)
     return optimizer
