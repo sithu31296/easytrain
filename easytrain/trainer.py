@@ -19,14 +19,13 @@ from easytrain.utils.torch_utils import *
 
 class Trainer:
     def __init__(self,
+        config: dict,
         model: torch.nn.Module,
         trainset: Dataset,
         testset: Dataset,
         criterion: torch.nn.Module,
-        config: dict,
-        collate_fn = None,
+        collate_fn = collate_fn,
         metric_fn = None,
-        model_weights = None,
     ) -> None:
         setup_cudnn()
         fix_seed(123 + get_rank())
@@ -36,7 +35,7 @@ class Trainer:
         self.num_of_gpus = get_world_size()
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-        self.trainloader, self.testloader = create_dataloader(trainset, testset, config['batch_size'], collate_fn, 8)
+        self.trainloader, self.testloader = create_dataloader(trainset, testset, config['batch_size'], collate_fn, config['workers'])
 
         self.model = model
         self.model = self.model.to(self.device)
