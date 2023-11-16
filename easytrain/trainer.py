@@ -36,8 +36,7 @@ class Trainer:
         self.num_of_gpus = get_world_size()
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-        self.trainloader = create_train_dataloader(trainset, config['batch_size'], collate_fn)
-        self.testloader = create_val_dataloader(testset, config['batch_size'], collate_fn)
+        self.trainloader, self.testloader = create_dataloader(trainset, testset, config['batch_size'], collate_fn, 8)
 
         self.model = model
         self.model = self.model.to(self.device)
