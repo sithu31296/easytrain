@@ -48,7 +48,7 @@ class Trainer:
 
         self.criterion = criterion
         self.metric_fn = metric_fn
-        self.optimizer = create_optimizer(config['optimizer'], self.model.parameters(), config['lr'], config['weight_decay'])
+        self.optimizer = create_optimizer(config['optimizer'], self.model, config['lr'], config['weight_decay'])
         self.scheduler = create_scheduler(self.optimizer, trainset, self.trainloader, config['batch_size'], config['epochs'], config['lr'], config['end_lr'], config['warmup_iters'])
 
         self.save_dir = Path(config['save_dir'])
