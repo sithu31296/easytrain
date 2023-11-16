@@ -42,10 +42,13 @@ def fix_seed(seed: int = 123) -> None:
 def collate_fn(batch):
     return tuple(zip(*batch))
 
-
-def time_sync() -> float:
+def synchronize():
     if torch.cuda.is_available():
         torch.cuda.synchronize()
+
+
+def time_sync() -> float:
+    synchronize()
     return time.time()
 
 
