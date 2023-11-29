@@ -27,7 +27,6 @@ def get_total_grad_norm(parameters, norm_type=2):
 
 def fix_seed(seed: int = 123) -> None:
     torch.manual_seed(seed)
-    torch.cuda.manual_seed(seed)
     torch.cuda.manual_seed_all(seed)
     np.random.seed(seed)
     random.seed(seed)
