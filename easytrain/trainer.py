@@ -8,12 +8,12 @@ from pathlib import Path
 from torch.utils.data import Dataset
 from torch.nn.parallel import DistributedDataParallel
 
-from .dataloaders import *
-from .optimizers import *
-from .schedulers import *
-from .engine import *
+from easytrain.dataloaders import create_dataloader
+from easytrain.optimizers import create_optimizer
+from easytrain.schedulers import create_scheduler
+from easytrain.engine import train_one_epoch, evaluate_one_epoch
+from easytrain.utils.torch_utils import setup_cudnn, fix_seed
 from easytrain.utils.distributed import *
-from easytrain.utils.torch_utils import *
 
 
 
@@ -24,7 +24,7 @@ class Trainer:
         trainset: Dataset,
         testset: Dataset,
         criterion: torch.nn.Module,
-        collate_fn = collate_fn,
+        collate_fn = None,
         metric_fn = None,
     ) -> None:
         setup_cudnn()
