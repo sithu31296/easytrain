@@ -67,7 +67,7 @@ class SmoothedValue:
 class MetricLogger:
     def __init__(self) -> None:
         self.meters = defaultdict(SmoothedValue)
-        self.delimiter = "\t"
+        self.delimiter = "  "
 
     def update(self, **kwargs):
         for k, v in kwargs.items():
