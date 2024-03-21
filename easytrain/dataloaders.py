@@ -21,6 +21,6 @@ def create_dataloader(
     train_batch_sampler = BatchSampler(train_sampler, batch_size, drop_last=True)
 
     train_loader = DataLoader(trainset, batch_sampler=train_batch_sampler, num_workers=num_workers, collate_fn=collate_fn, worker_init_fn=fix_seed, pin_memory=True)
-    val_loader = DataLoader(valset, 1, sampler=val_sampler, num_workers=num_workers, collate_fn=collate_fn)
+    val_loader = DataLoader(valset, batch_size=batch_size, sampler=val_sampler, num_workers=num_workers, collate_fn=collate_fn)
 
     return train_loader, val_loader
